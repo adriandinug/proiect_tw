@@ -13,7 +13,7 @@
 
 ### Plan
 
-Prezent - 05.12.2022
+**Prezent - 05.12.2022**
 
 - Front-end aplicație
 - Servicii RESTful
@@ -21,6 +21,6 @@ Prezent - 05.12.2022
 
 ### Final
 
-05.12.2022 - 16.01.2023
+**05.12.2022 - 16.01.2023**
 
 - Restul aplicației
