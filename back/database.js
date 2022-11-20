@@ -12,6 +12,6 @@ import User from './db/models/User.js';
     prenume: 'Ion',
     mail: 'gigi@test.com',
   });
-  // const users = await User.findAll({ raw: true });
-  // console.log(users);
+  const users = await User.findAll({ raw: true });
+  console.log(users);
 })();
