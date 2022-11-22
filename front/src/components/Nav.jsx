@@ -12,6 +12,18 @@ function Nav({ setOffset }) {
     setOffset(header.height);
   }, []);
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [open]);
+
   return (
     <>
       <header className='header sticky-header' ref={headerRef}>
@@ -43,6 +55,11 @@ function Nav({ setOffset }) {
               <li>
                 <Link to='/profile' onClick={() => setOpen(false)}>
                   Profile
+                </Link>
+              </li>
+              <li>
+                <Link to='/login' onClick={() => setOpen(false)}>
+                  Login
                 </Link>
               </li>
             </ul>

@@ -39,7 +39,7 @@
   width: 40%;
   height: max-content;
   z-index: 1;
-  transform: translateX(-100%);
+  transform: translateX(-102%);
   transition: transform 0.3s ease;
 }
 .nav-drawer.open {

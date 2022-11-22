@@ -78,7 +78,16 @@ a:visited {
 .home {
   height: 300vh;
 }
+.page-width {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 40px;
+}
 @media only screen and (max-width: 990px) {
+  .page-width {
+    padding: 0 20px;
+  }
   h1 {
     font-size: 43px;
     line-height: 51px;
@@ -98,5 +107,10 @@ a:visited {
   h5 {
     font-size: 18px;
     line-height: 22px;
+  }
+}
+@media only screen and (max-width: 550px) {
+  .page-width {
+    padding: 0 10px;
   }
 }
