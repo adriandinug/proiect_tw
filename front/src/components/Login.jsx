@@ -31,6 +31,7 @@ function Login() {
       <div className='wrapper'>
         <h4>Login to your account on the Notes App platform!</h4>
         {loading ? <div>Loading...</div> : <div id='loginDiv'></div>}
+        {error && !error.includes('successful') && <div className='error'>{error}</div>}
       </div>
       <p className='back'>
         Or go back to the <Link to='/'>homepage</Link>

@@ -9,22 +9,47 @@ function App() {
   const [offset, setOffset] = useState(0);
   const [user, setUser] = useState(null);
 
+  async function checkValid(userToBeChecked) {
+    const res = await fetch('http://localhost:3000/api/verify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token: userToBeChecked?.token }),
+    });
+    const data = await res.json();
+    return data;
+  }
+
   useEffect(() => {
     const theUser = localStorage.getItem('user');
 
     if (theUser && !theUser.includes('undefined')) {
-      setUser(JSON.parse(theUser));
+      checkValid(JSON.parse(theUser)).then((data) => {
+        console.log(data);
+        if (data.valid === true) {
+          setUser(JSON.parse(theUser));
+        } else {
+          localStorage.removeItem('user');
+          window.location.reload();
+        }
+      });
     }
   }, []);
 
   return (
     <div>
       <Nav setOffset={setOffset} />
-      <main style={{ paddingTop: offset + 'px' }} className='page-width'>
+      <main
+        style={{ paddingTop: (offset ? offset : '74') + 'px', marginTop: '30px' }}
+        className='page-width'
+      >
         <Routes>
-          a
           <Route path='/' element={<Home />} />
-          <Route path='/profile' element={<Profile user={user} />} />
+          <Route
+            path='/profile'
+            element={!user ? <Navigate to='/login' /> : <Profile user={user} />}
+          />
           <Route path='/login' element={!user ? <Login /> : <Navigate to='/profile' />} />
         </Routes>
       </main>

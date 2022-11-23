@@ -11,8 +11,6 @@ const port = 3000;
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-let DB = [];
-
 app.use(express.json());
 
 app.use(
@@ -34,16 +32,17 @@ app.post('/api/login', async (req, res) => {
 
       const profile = verificationResponse?.payload;
 
-      const existsInDB = DB.find((person) => person?.email === profile?.email);
+      const existsInDB = await User.findOne({ where: { mail: profile.email } });
 
-      if (!existsInDB) {
-        console.log('registered new acc, ', profile);
-        DB.push(profile);
-      } else {
-        console.log('already existed', profile);
+      if (!existsInDB && profile?.email.includes('ase.ro')) {
+        await User.sync();
+        const user = await User.create({
+          nume: profile?.family_name,
+          prenume: profile?.given_name,
+          mail: profile?.email,
+          picture: profile?.picture,
+        });
       }
-
-      console.log(DB);
 
       res.status(201).json({
         message: 'Login was successful',
@@ -61,6 +60,23 @@ app.post('/api/login', async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: error?.message || error,
+    });
+  }
+});
+
+app.post('/api/verify', async (req, res) => {
+  try {
+    const token = req.body.token;
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decodedToken);
+    res.status(200).json({
+      message: 'Token is valid',
+      valid: true,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error?.message || error,
+      valid: false,
     });
   }
 });

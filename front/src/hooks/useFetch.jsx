@@ -21,8 +21,13 @@ const useFetch = (url) => {
       })
       .then((data) => {
         if (data?.user) {
-          localStorage.setItem('user', JSON.stringify(data?.user));
-          window.location.reload();
+          if (!data?.user.email.includes('ase.ro')) {
+            setError('Please use your ase.ro email address to login!');
+            return;
+          } else {
+            localStorage.setItem('user', JSON.stringify(data?.user));
+            window.location.reload();
+          }
         }
 
         throw new Error(data?.message || data);

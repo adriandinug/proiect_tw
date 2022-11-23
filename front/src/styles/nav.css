@@ -40,7 +40,7 @@
   height: max-content;
   z-index: 1;
   transform: translateX(-102%);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, width 0.2s ease;
 }
 .nav-drawer.open {
   transform: translateX(0);
@@ -53,6 +53,8 @@
   padding: 12px 16px;
   position: relative;
   background: white;
+  z-index: 2;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
 }
 .header.sticky-header {
   position: fixed;
@@ -88,4 +90,9 @@
   overflow: hidden;
   background-color: rgba(0, 0, 0, 0.4);
   cursor: unset;
+}
+@media only screen and (max-width: 990px) {
+  .nav-drawer {
+    width: 80%;
+  }
 }

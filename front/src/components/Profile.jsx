@@ -14,7 +14,9 @@ function Profile({ user }) {
           </p>
           <img src={user?.picture} alt='' />
           <div style={{ marginTop: '20px' }}>
-            <button onClick={logout}>LOG OUT</button>
+            <button className='btn btn--primary' onClick={logout}>
+              LOG OUT
+            </button>
           </div>
         </>
       ) : (
