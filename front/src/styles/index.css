@@ -6,6 +6,9 @@
   padding: 0;
   color: inherit;
 }
+::selection {
+  background-color: rgb(192, 192, 192);
+}
 body {
   margin: 0;
   font-family: 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
@@ -60,6 +63,7 @@ a {
   cursor: pointer;
   transition: background-color 0.2s ease;
   font-weight: 500;
+  letter-spacing: 0.6px;
 }
 .btn.btn--primary {
   color: white;

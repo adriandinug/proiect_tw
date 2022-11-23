@@ -15,7 +15,10 @@ function App() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ token: userToBeChecked?.token }),
+      body: JSON.stringify({
+        token: userToBeChecked?.token,
+        mail: userToBeChecked?.email,
+      }),
     });
     const data = await res.json();
     return data;

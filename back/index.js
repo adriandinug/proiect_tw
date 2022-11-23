@@ -3,9 +3,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import User from './db/models/User.js';
+import Note from './db/models/Note.js';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
+
 const app = express();
 const port = 3000;
 
@@ -69,15 +71,82 @@ app.post('/api/verify', async (req, res) => {
     const token = req.body.token;
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     console.log(decodedToken);
-    res.status(200).json({
-      message: 'Token is valid',
-      valid: true,
-    });
+    const existsInDB = await User.findOne({ where: { mail: req.body.mail } });
+    if (existsInDB) {
+      res.status(200).json({
+        message: 'Token is valid',
+        valid: true,
+      });
+    } else {
+      res.status(200).json({
+        message: 'Account not found',
+        valid: false,
+      });
+    }
   } catch (error) {
     res.status(500).json({
       message: error?.message || error,
       valid: false,
     });
+  }
+});
+
+app.post('/api/save-note', async (req, res) => {
+  try {
+    const note = req.body.note;
+    const id = req.body.id;
+    const email = req.body.email;
+    const user = await User.findOne({ where: { mail: email } });
+    if (user) {
+      await Note.sync();
+      if (id !== '') {
+        const noteToEdit = await Note.update({ note: note }, { where: { id: id } });
+        res.status(201).json({
+          message: 'Note updated',
+          saved: true,
+        });
+      } else {
+        const noteToSave = await Note.create({
+          content: note,
+          userId: user.id,
+        });
+        res.status(201).json({
+          message: 'Note saved',
+          saved: true,
+          noteId: noteToSave.id,
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: error?.message || error,
+      saved: false,
+      note: null,
+    });
+  }
+});
+
+app.post('/api/get-last-note', async (req, res) => {
+  const mail = req.body.mail;
+  const user = await User.findOne({ where: { mail: mail } });
+  if (user) {
+    const note = await Note.findOne({
+      where: { userId: user.id },
+      order: [['createdAt', 'DESC']],
+    });
+    if (note) {
+      const noteText = note.content.toString();
+      res.status(200).json({
+        note: note,
+        noteText: noteText,
+      });
+    } else {
+      res.status(200).json({
+        message: 'No notes found',
+        note: null,
+      });
+    }
   }
 });
 
