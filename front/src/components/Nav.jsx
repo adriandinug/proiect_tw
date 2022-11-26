@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import '../styles/nav.css';
 import { useState, useRef, useEffect } from 'react';
 
-function Nav({ setOffset }) {
+function Nav({ setOffset, isLoggedIn }) {
   const [open, setOpen] = useState(false);
   const headerRef = useRef(null);
 
@@ -58,10 +58,17 @@ function Nav({ setOffset }) {
                 </Link>
               </li>
               <li>
-                <Link to='/login' onClick={() => setOpen(false)}>
-                  Login
+                <Link to='/notes' onClick={() => setOpen(false)}>
+                  Notes
                 </Link>
               </li>
+              {!isLoggedIn && (
+                <li>
+                  <Link to='/login' onClick={() => setOpen(false)}>
+                    Login
+                  </Link>
+                </li>
+              )}
             </ul>
           </nav>
         </div>

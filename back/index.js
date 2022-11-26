@@ -91,31 +91,22 @@ app.post('/api/verify', async (req, res) => {
   }
 });
 
-app.post('/api/save-note', async (req, res) => {
+app.post('/api/user/save', async (req, res) => {
   try {
     const note = req.body.note;
-    const id = req.body.id;
     const email = req.body.email;
     const user = await User.findOne({ where: { mail: email } });
     if (user) {
       await Note.sync();
-      if (id !== '') {
-        const noteToEdit = await Note.update({ note: note }, { where: { id: id } });
-        res.status(201).json({
-          message: 'Note updated',
-          saved: true,
-        });
-      } else {
-        const noteToSave = await Note.create({
-          content: note,
-          userId: user.id,
-        });
-        res.status(201).json({
-          message: 'Note saved',
-          saved: true,
-          noteId: noteToSave.id,
-        });
-      }
+      const noteToSave = await Note.create({
+        content: note,
+        userId: user.id,
+      });
+      res.status(201).json({
+        message: 'Note saved',
+        saved: true,
+        noteId: noteToSave.id,
+      });
     }
   } catch (error) {
     console.log(error);
@@ -127,7 +118,47 @@ app.post('/api/save-note', async (req, res) => {
   }
 });
 
-app.post('/api/get-last-note', async (req, res) => {
+app.get('/api/user/notes/', async (req, res) => {
+  const mail = req.get('user-email');
+  const user = await User.findOne({ where: { mail: mail } });
+  if (user) {
+    let notes = await Note.findAll({
+      where: { userId: user.id },
+      order: [['createdAt', 'DESC']],
+    });
+    if (notes) {
+      notes.forEach((note) => {
+        const notesText = note.content.toString();
+        note.content = notesText;
+      });
+      res.status(200).json({
+        message: 'Notes fetched',
+        notes: notes,
+      });
+    }
+  }
+});
+
+app.get('/api/user/notes/:id', async (req, res) => {
+  const mail = req.get('user-email');
+  const user = await User.findOne({ where: { mail: mail } });
+  if (user) {
+    const note = await Note.findOne({
+      where: { id: req.params.id },
+    });
+    if (note) {
+      console.log(note);
+      const notesText = note.content.toString();
+      note.content = notesText;
+      res.status(200).json({
+        message: 'Note fetched',
+        note: note,
+      });
+    }
+  }
+});
+
+app.post('/api/user/last', async (req, res) => {
   const mail = req.body.mail;
   const user = await User.findOne({ where: { mail: mail } });
   if (user) {

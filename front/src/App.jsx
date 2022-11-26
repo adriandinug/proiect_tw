@@ -3,6 +3,8 @@ import Home from './components/Home';
 import Profile from './components/Profile';
 import Nav from './components/Nav';
 import Login from './components/Login';
+import Notes from './components/Notes';
+import NotePage from './components/NotePage';
 import { useState, useEffect } from 'react';
 
 function App() {
@@ -42,7 +44,7 @@ function App() {
 
   return (
     <div>
-      <Nav setOffset={setOffset} />
+      <Nav setOffset={setOffset} isLoggedIn={user ? true : false} />
       <main
         style={{ paddingTop: (offset ? offset : '74') + 'px', marginTop: '30px' }}
         className='page-width'
@@ -53,6 +55,11 @@ function App() {
             path='/profile'
             element={!user ? <Navigate to='/login' /> : <Profile user={user} />}
           />
+          <Route
+            path='/notes'
+            element={!user ? <Navigate to='/login' /> : <Notes user={user} />}
+          />
+          <Route path='/note/:id' element={<NotePage user={user} />} />
           <Route path='/login' element={!user ? <Login /> : <Navigate to='/profile' />} />
         </Routes>
       </main>

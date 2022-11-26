@@ -37,10 +37,9 @@ function Profile({ user }) {
   `;
   const [note, setNote] = useState('');
   const [saved, setSaved] = useState(false);
-  const [currentNote, setCurrentNote] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/get-last-note', {
+    fetch('http://localhost:3000/api/user/last', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,24 +60,16 @@ function Profile({ user }) {
 
   const saveNote = async () => {
     if (user) {
-      let currId = '';
-      if (currentNote !== '') {
-        currId = currentNote;
-      }
-      console.log(note);
-      const save = await fetch(`http://localhost:3000/api/save-note`, {
+      const save = await fetch(`http://localhost:3000/api/user/save`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ note: note, email: user.email, id: currId }),
+        body: JSON.stringify({ note: note, email: user.email }),
       });
       const data = await save.json();
       console.log(data);
       if (data.saved) {
-        if (currentNote === '') {
-          setCurrentNote(data.noteId);
-        }
         setSaved(true);
       }
     }
@@ -95,12 +86,12 @@ function Profile({ user }) {
           </p>
           <img src={user?.picture} alt='' />
           <div style={{ marginTop: '20px' }}>
-            <button className='btn btn--primary' onClick={logout}>
+            <button className='button button--primary' onClick={logout}>
               LOG OUT
             </button>
             <button
               style={{ marginLeft: '20px' }}
-              className='btn btn--secondary'
+              className='button button--secondary'
               onClick={saveNote}
             >
               SAVE

@@ -1,0 +1,21 @@
+.notes-grid {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: repeat(5, 1fr);
+  margin-top: 25px;
+}
+.notes-grid .headers {
+  display: grid;
+  grid-column: span 5;
+  grid-template-rows: 1fr;
+  grid-template-columns: repeat(5, 1fr);
+  margin-bottom: 18px;
+  padding: 0 10px;
+  column-gap: 5px;
+}
+.notes-grid .note:nth-of-type(odd) {
+  background-color: #dbdbdb;
+}
+.notes-grid .note {
+  padding: 10px;
+}

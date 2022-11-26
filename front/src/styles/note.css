@@ -1,0 +1,42 @@
+.note {
+  display: grid;
+  grid-column: span 5;
+  grid-template-rows: 1fr;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  column-gap: 5px;
+}
+.note .note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 16px;
+}
+.note .note-actions .button-view a,
+.note .note-actions .button-delete a {
+  color: white;
+  text-decoration: none;
+}
+.note .note-actions .button-view,
+.note .note-actions .button-delete {
+  font-family: 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+  border: 1px solid #222;
+  border-radius: 20px;
+  padding: 8px 20px;
+  color: white;
+  font-weight: 500;
+  font-size: 15px;
+  max-width: 90px;
+  width: 100%;
+  cursor: pointer;
+}
+.note .note-actions .button-view {
+  background-color: rgb(32, 129, 209);
+}
+.note .note-actions .button-delete {
+  background-color: rgb(209, 32, 32);
+}

@@ -24,25 +24,45 @@ img {
   max-width: 100%;
   height: auto;
 }
-h1 {
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  line-height: 1.2;
+  font-weight: 500;
+}
+h1,
+.h1 {
   font-size: 70px;
-  line-height: 80px;
 }
-h2 {
+h2,
+.h2 {
   font-size: 46px;
-  line-height: 54px;
 }
-h3 {
+h3,
+.h3 {
   font-size: 36px;
-  line-height: 44px;
 }
-h4 {
+h4,
+.h4 {
   font-size: 28px;
-  line-height: 34px;
 }
-h5 {
+h5,
+.h5 {
   font-size: 22px;
-  line-height: 28px;
+}
+h6,
+.h6 {
+  font-size: 18px;
 }
 p,
 a,
@@ -50,13 +70,18 @@ li,
 .body {
   font-size: 16px;
   line-height: 22px;
+  color: #222;
+  margin: 0;
 }
 a {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.btn {
+.button {
   font-family: 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   border: 1px solid #222;
   border-radius: 100px;
   padding: 12px 40px;
@@ -64,19 +89,20 @@ a {
   transition: background-color 0.2s ease;
   font-weight: 500;
   letter-spacing: 0.6px;
+  font-size: 15px;
 }
-.btn.btn--primary {
+.button.button--primary {
   color: white;
   background-color: #222;
 }
-.btn.btn--primary:hover {
+.button.button--primary:hover {
   background-color: #444;
 }
-.btn.btn--secondary {
+.button.button--secondary {
   color: #222;
   background-color: white;
 }
-.btn.btn--secondary:hover {
+.button.button--secondary:hover {
   background-color: #eee;
 }
 a:visited {
@@ -95,25 +121,29 @@ a:visited {
   .page-width {
     padding: 0 25px;
   }
-  h1 {
+  h1,
+  .h1 {
     font-size: 43px;
-    line-height: 51px;
   }
-  h2 {
+  h2,
+  .h2 {
     font-size: 32px;
-    line-height: 40px;
   }
-  h3 {
+  h3,
+  .h3 {
     font-size: 27px;
-    line-height: 35px;
   }
-  h4 {
+  h4,
+  .h4 {
     font-size: 22px;
-    line-height: 28px;
   }
-  h5 {
+  h5,
+  .h5 {
     font-size: 18px;
-    line-height: 22px;
+  }
+  h6,
+  .h6 {
+    font-size: 16px;
   }
 }
 @media only screen and (max-width: 550px) {

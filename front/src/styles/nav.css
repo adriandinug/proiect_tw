@@ -5,6 +5,7 @@
   display: grid;
   grid-template-rows: auto;
   grid-template-columns: 1fr;
+  width: 100%;
 }
 .nav ul li {
   padding: 20px 30px;

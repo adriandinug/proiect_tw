@@ -10,13 +10,31 @@ Note.init(
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
     },
+    userId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    fileName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'New note',
+    },
     content: {
       type: DataTypes.BLOB,
       allowNull: true,
     },
-    userId: {
-      type: DataTypes.UUID,
+    materie: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: 'Universal',
+    },
+    type: {
+      type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: 'SEMINAR',
+      validate: {
+        isIn: [['CURS', 'SEMINAR']],
+      },
     },
   },
   {
