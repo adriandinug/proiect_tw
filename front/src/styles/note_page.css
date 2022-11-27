@@ -1,0 +1,63 @@
+.general-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #222;
+  margin-bottom: 30px;
+}
+.note-page {
+  margin-top: 20px;
+}
+.note-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.note-wrapper .note-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.note-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.note-content.full {
+  margin-bottom: 40px;
+}
+.note-content.full {
+  justify-content: flex-start;
+}
+.note-content.full > * {
+  width: 100%;
+}
+.note-content.full textarea {
+  height: 100%;
+  min-height: 700px;
+}
+.note-content.half {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  position: relative;
+  min-height: 700px;
+}
+.note-content.half:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background-color: #222;
+}

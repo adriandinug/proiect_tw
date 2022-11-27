@@ -24,3 +24,39 @@
 **05.12.2022 - 16.01.2023**
 
 - Restul aplicației
+
+### Endpoints
+
+**user id** este de fapt un JWT ce contine id-ul utilizatorului semnat cu un secret de pe server
+
+#### /api/user :
+
+**GET** user
+
+- /api/user/:id (user id)
+
+**DELETE** user
+
+- /api/user/:id (user id + token poate)
+
+#### /api/user/notes :
+
+**GET** all notes
+
+- /api/user/notes/:id (user id)
+
+**GET** one note
+
+- /api/user/note/:id (note id)
+
+**DELETE** one note
+
+- /api/user/note/:id (note id)
+
+**PUT**(update) one note
+
+- /api/user/note/:id (note id)
+
+**POST** one note
+
+- /api/user/note (toate detaliile in req body)

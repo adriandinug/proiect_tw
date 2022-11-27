@@ -1,13 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/note.css';
 
-function Note({ note, user }) {
+function Note({ note, user, refresh }) {
+  const thisUser = useRef(user);
+
   useEffect(() => {
     if (!user) {
-      user = JSON.parse(localStorage.getItem('user'));
+      thisUser.current = JSON.parse(localStorage.getItem('user'));
     }
-  }, []);
+  }, [user]);
 
   const formatDate = (date) => {
     return new Date(date)
@@ -17,6 +19,21 @@ function Note({ note, user }) {
         day: 'numeric',
       })
       .replace(/ /g, '-');
+  };
+
+  const deleteNote = () => {
+    fetch('http://localhost:3000/api/user/note/' + note.id, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Token': thisUser.current.token,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        refresh();
+      });
   };
 
   return (
@@ -39,7 +56,9 @@ function Note({ note, user }) {
         <button className='button-view'>
           <Link to={'/note/' + note.id}>View</Link>
         </button>
-        <button className='button-delete'>Delete</button>
+        <button onClick={() => deleteNote()} className='button-delete'>
+          Delete
+        </button>
       </div>
     </div>
   );

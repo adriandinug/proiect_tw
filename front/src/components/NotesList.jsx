@@ -1,13 +1,15 @@
 import Note from './Note';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import '../styles/notes_list.css';
 
-function NotesList({ notes, user }) {
+function NotesList({ notes, user, refresh }) {
+  const thisUser = useRef(user);
+
   useEffect(() => {
     if (!user) {
-      user = JSON.parse(localStorage.getItem('user'));
+      thisUser.current = JSON.parse(localStorage.getItem('user'));
     }
-  }, []);
+  }, [user]);
 
   return (
     <div className='notesList'>
@@ -19,9 +21,13 @@ function NotesList({ notes, user }) {
           <p className='note-updated h6'>Updated at</p>
           {/* <p className='note-actions h6'>Actions</p> */}
         </div>
-        {notes.map((note) => (
-          <Note key={note.id} note={note} user={user} />
-        ))}
+        {notes.length > 0 ? (
+          notes.map((note) => (
+            <Note key={note.id} note={note} user={user} refresh={refresh} />
+          ))
+        ) : (
+          <p style={{ paddingLeft: '10px' }}>You have no notes.</p>
+        )}
       </div>
     </div>
   );

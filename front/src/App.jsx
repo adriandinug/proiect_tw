@@ -50,7 +50,7 @@ function App() {
         className='page-width'
       >
         <Routes>
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<Home user={user} />} />
           <Route
             path='/profile'
             element={!user ? <Navigate to='/login' /> : <Profile user={user} />}

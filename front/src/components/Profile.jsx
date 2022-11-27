@@ -40,18 +40,20 @@ function Profile({ user }) {
 
   useEffect(() => {
     fetch('http://localhost:3000/api/user/last', {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'User-Email': user.email,
+        'User-Token': user.token,
       },
-      body: JSON.stringify({ mail: user.email }),
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         setNote(data.noteText);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [user.email, user.token]);
 
   const logout = () => {
     localStorage.removeItem('user');
@@ -60,12 +62,12 @@ function Profile({ user }) {
 
   const saveNote = async () => {
     if (user) {
-      const save = await fetch(`http://localhost:3000/api/user/save`, {
+      const save = await fetch(`http://localhost:3000/api/user/note/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ note: note, email: user.email }),
+        body: JSON.stringify({ note: note, email: user.email, token: user.token }),
       });
       const data = await save.json();
       console.log(data);
