@@ -96,6 +96,31 @@ app.post('/api/verify', async (req, res) => {
   }
 });
 
+// get last note
+app.get('/api/user/last', async (req, res) => {
+  const mail = req.get('user-email');
+  const token = await decodeJWT(req.get('user-token'));
+  const user = await User.findOne({ where: { mail: mail } });
+  if (user && token.id == user.id) {
+    const note = await Note.findOne({
+      where: { userId: user.id },
+      order: [['createdAt', 'DESC']],
+    });
+    if (note) {
+      const noteText = note.content.toString();
+      res.status(200).json({
+        note: note,
+        noteText: noteText,
+      });
+    } else {
+      res.status(404).json({
+        message: 'No notes found',
+        note: null,
+      });
+    }
+  }
+});
+
 // get user
 app.get('/api/user/:id', async (req, res) => {
   try {
@@ -104,7 +129,7 @@ app.get('/api/user/:id', async (req, res) => {
     if (user) {
       res.status(200).json({
         message: 'User found',
-        user: Object.assign({}, user, { id: undefined }),
+        user: Object.assign({}, user.dataValues, { id: undefined }),
       });
     } else {
       res.status(404).json({
@@ -296,31 +321,6 @@ app.delete('/api/user/note/:id', async (req, res) => {
       message: error?.message || error,
       deleted: false,
     });
-  }
-});
-
-// get last note
-app.get('/api/user/last', async (req, res) => {
-  const mail = req.get('user-email');
-  const token = await decodeJWT(req.get('user-token'));
-  const user = await User.findOne({ where: { mail: mail } });
-  if (user && token.id == user.id) {
-    const note = await Note.findOne({
-      where: { userId: user.id },
-      order: [['createdAt', 'DESC']],
-    });
-    if (note) {
-      const noteText = note.content.toString();
-      res.status(200).json({
-        note: note,
-        noteText: noteText,
-      });
-    } else {
-      res.status(404).json({
-        message: 'No notes found',
-        note: null,
-      });
-    }
   }
 });
 
