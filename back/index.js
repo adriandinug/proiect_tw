@@ -26,8 +26,8 @@ const setDB = async (req = null, res = null) => {
   try {
     User.hasMany(Note, { foreignKey: 'noteOwner', targetKey: 'id', type: 'UUID' });
     Note.belongsTo(User, { foreignKey: 'noteOwner', targetKey: 'id', type: 'UUID' });
-    await User.sync();
-    await Note.sync();
+    await User.sync({ alter: true });
+    await Note.sync({ alter: true });
     if (res) {
       res.status(200).json({
         message: 'Database was set successfully',
@@ -43,7 +43,7 @@ const setDB = async (req = null, res = null) => {
   }
 };
 
-setDB();
+// setDB();
 
 app.get('/api/setdb', async (req, res) => {
   setDB(req, res);
@@ -204,15 +204,15 @@ app.delete('/api/user/:id', async (req, res) => {
 app.post('/api/user/note/', async (req, res) => {
   try {
     const note = req.body.note;
-    const email = req.body.email;
-    const token = await decodeJWT(req.body.token);
+    const email = req.get('user-email');
+    const token = await decodeJWT(req.get('user-token'));
     const user = await User.findOne({ where: { mail: email } });
     if (user && token.id == user.id) {
       await Note.sync();
       const noteToSave = await Note.create({
         content: note,
-        noteOwner: user.id,
       });
+      await noteToSave.setUser(user);
       res.status(201).json({
         message: 'Note saved',
         saved: true,
@@ -303,12 +303,21 @@ app.put('/api/user/note/:id', async (req, res) => {
   try {
     const userId = await decodeJWT(req.get('User-Token'));
     const user = await User.findOne({ where: { id: userId.id } });
+    const { content, fileName, type, materie, tags } = req.body;
     if (user) {
       const note = await Note.findOne({
         where: { id: req.params.id },
       });
+      console.log(tags);
+      const newTags = tags ? tags : '';
       if (note) {
-        await note.update({ content: req.body.content });
+        await note.update({
+          content,
+          fileName,
+          materie,
+          type,
+          tags: newTags,
+        });
         res.status(200).json({
           message: 'Note updated',
           note: note,

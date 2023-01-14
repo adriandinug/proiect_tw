@@ -1,0 +1,18 @@
+.tag {
+  padding: 4px 6px;
+  background-color: #222;
+  color: white;
+  border-radius: 8px;
+  text-align: center;
+  display: grid;
+  place-items: center;
+  grid-template-rows: 1fr;
+  grid-template-columns: auto auto;
+  gap: 15px;
+  justify-content: space-between;
+}
+.tag .delete {
+  color: white;
+  padding: 5px;
+  cursor: pointer;
+}

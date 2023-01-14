@@ -45,10 +45,7 @@ function App() {
   return (
     <div>
       <Nav setOffset={setOffset} isLoggedIn={user ? true : false} />
-      <main
-        style={{ paddingTop: (offset ? offset : '74') + 'px', marginTop: '30px' }}
-        className='page-width'
-      >
+      <main style={{ paddingTop: '104px' }} className='page-width'>
         <Routes>
           <Route path='/' element={<Home user={user} />} />
           <Route
@@ -59,7 +56,10 @@ function App() {
             path='/notes'
             element={!user ? <Navigate to='/login' /> : <Notes user={user} />}
           />
-          <Route path='/note/:id' element={<NotePage user={user} />} />
+          <Route
+            path='/note/:id'
+            element={!user ? <Navigate to='/login' /> : <NotePage user={user} />}
+          />
           <Route path='/login' element={!user ? <Login /> : <Navigate to='/profile' />} />
         </Routes>
       </main>

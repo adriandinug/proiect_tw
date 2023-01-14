@@ -32,6 +32,11 @@ Note.init(
         isIn: [['CURS', 'SEMINAR']],
       },
     },
+    tags: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: '',
+    },
   },
   {
     sequelize,

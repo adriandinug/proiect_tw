@@ -42,9 +42,10 @@ function Note({ note, user, refresh }) {
         <p>{note.fileName}</p>
       </div>
       <div className='note-type'>
-        <p>
-          {note.type} - {note.materie}
-        </p>
+        <p>{note.type}</p>
+      </div>
+      <div className='note-subject'>
+        <p>{note.materie}</p>
       </div>
       <div className='note-created'>
         <p>{formatDate(note.createdAt)}</p>

@@ -16,7 +16,8 @@ function NotesList({ notes, user, refresh }) {
       <div className='notes-grid'>
         <div className='headers'>
           <p className='note-name h6'>Note name</p>
-          <p className='note-type h6'>Type - Subject</p>
+          <p className='note-type h6'>Type</p>
+          <p className='note-subject h6'>Subject</p>
           <p className='note-created h6'>Created at</p>
           <p className='note-updated h6'>Updated at</p>
           {/* <p className='note-actions h6'>Actions</p> */}

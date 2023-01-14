@@ -1,10 +1,13 @@
-import Notes from './Notes';
+import FriendsSearch from './FriendsSearch.jsx';
 
 function Home({ user }) {
   return (
     <div className='home'>
-      <h2>This is home</h2>
-      <Notes user={user} />
+      <div className='friends'>
+        <h3>Search for friends to share your notes with!</h3>
+        <FriendsSearch />
+      </div>
+      <div className='new-note'></div>
     </div>
   );
 }

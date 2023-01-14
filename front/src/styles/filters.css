@@ -1,0 +1,32 @@
+.filters {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 50px;
+}
+.filters select {
+  font-size: 18px;
+  padding: 4px 8px;
+  width: 100%;
+}
+.filters .filter h5 {
+  margin-bottom: 18px;
+}
+.filters .filter {
+  margin-bottom: 20px;
+}
+.search {
+  margin-bottom: 30px;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.search input {
+  max-width: 500px;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 18px;
+  border-radius: 10px;
+  outline: none;
+  border: 1px solid #222;
+}

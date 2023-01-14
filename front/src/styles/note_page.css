@@ -61,3 +61,77 @@
   height: 100%;
   background-color: #222;
 }
+.edit-wrapper {
+  display: grid;
+  grid-template-rows: auto;
+  justify-content: center;
+  row-gap: 20px;
+}
+.edit-wrapper .field {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+.edit-wrapper .field input,
+.edit-wrapper .field-tags input {
+  outline: none;
+  border: 1px solid #222;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 16px;
+}
+.edit-wrapper .field input[type='radio'] {
+  width: 20px;
+  height: 20px;
+  accent-color: #222;
+}
+.edit-wrapper .field > div {
+  display: grid;
+  align-items: center;
+  justify-content: flex-start;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr;
+}
+.edit-wrapper .field > div > div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+.edit-wrapper .field-tags {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+.edit-wrapper .field-tags > div:not(.tags) {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+.edit-wrapper .field-tags .tags {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: repeat(3, auto);
+  min-width: 200px;
+  gap: 10px;
+}
+.edit-wrapper .add-tag {
+  outline: none;
+  border: 1px solid #222;
+  border-radius: 4px;
+  background-color: white;
+  color: #222;
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: auto;
+}
+.edit-wrapper button[type='submit'] {
+  margin-top: 30px;
+}

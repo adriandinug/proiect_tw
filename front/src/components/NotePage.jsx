@@ -1,7 +1,9 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { debounce } from '../utils/debounce';
+import EditNote from './EditNote';
 import '../styles/note_page.css';
 
 function NotePage({ user }) {
@@ -11,14 +13,24 @@ function NotePage({ user }) {
   const [found, setFound] = useState(true);
   const [full, setFull] = useState(true);
   const [show, setShow] = useState(false);
+  const [edit, setEdit] = useState(false);
   const [content, setContent] = useState('');
   const thisUser = useRef(user);
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     if (note) {
       setContent(note.content);
+      console.log(note);
     }
   }, [note]);
+
+  useEffect(() => {
+    if (searchParams.get('edit')) {
+      setEdit(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!user) {
@@ -33,22 +45,26 @@ function NotePage({ user }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setNote(data.note);
         setFound(data.found);
       });
   }, [id, user]);
 
   const updateNote = debounce(() => {
+    const data = {
+      fileName: note.fileName,
+      type: note.type,
+      materie: note.materie,
+      content: content,
+      tags: note.tags,
+    };
     fetch('http://localhost:3000/api/user/note/' + id, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'User-Token': thisUser.current.token,
       },
-      body: JSON.stringify({
-        content: content,
-      }),
+      body: JSON.stringify(data),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -69,19 +85,32 @@ function NotePage({ user }) {
             </p>
           </div>
           <div className='note-buttons'>
-            <button className='button button--save' onClick={() => updateNote()}>
-              Save
+            <button className='button button--secondary' onClick={() => setEdit(!edit)}>
+              Edit
             </button>
-            <button className='button button--secondary' onClick={() => setFull(!full)}>
-              Switch design
-            </button>
-            {full && (
+
+            {!edit && (
+              <>
+                <button
+                  className='button button--secondary'
+                  onClick={() => setFull(!full)}
+                >
+                  Switch design
+                </button>
+                <button className='button button--save' onClick={() => updateNote()}>
+                  Save
+                </button>
+              </>
+            )}
+            {!edit && full && (
               <button className='button button--primary' onClick={() => setShow(!show)}>
                 Switch view
               </button>
             )}
           </div>
-          {full ? (
+          {edit ? (
+            <EditNote user={user} updateNote={setNote} />
+          ) : full ? (
             <div className={show ? 'note-content full show' : 'note-content full'}>
               {show ? (
                 <ReactMarkdown

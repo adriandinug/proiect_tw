@@ -7,12 +7,6 @@ function Nav({ setOffset, isLoggedIn }) {
   const headerRef = useRef(null);
 
   useEffect(() => {
-    const header = headerRef.current.getBoundingClientRect();
-
-    setOffset(header.height);
-  }, []);
-
-  useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
     } else {
