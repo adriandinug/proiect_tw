@@ -22,7 +22,6 @@ function NotePage({ user }) {
   useEffect(() => {
     if (note) {
       setContent(note.content);
-      console.log(note);
     }
   }, [note]);
 
@@ -68,7 +67,6 @@ function NotePage({ user }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setNote(data.note);
         setFound(data.found);
       });
