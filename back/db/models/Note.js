@@ -10,10 +10,6 @@ Note.init(
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
     },
-    userId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
     fileName: {
       type: DataTypes.STRING,
       allowNull: false,

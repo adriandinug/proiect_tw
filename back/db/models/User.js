@@ -1,19 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../connection.js';
 
-class User extends Model {
-  getName() {
-    return [this.nume, this.prenume].join(' ');
-  }
-
-  getId() {
-    return this.id;
-  }
-
-  showAll() {
-    return [this.nume, this.prenume, this.mail].join(', ');
-  }
-}
+class User extends Model {}
 
 User.init(
   {

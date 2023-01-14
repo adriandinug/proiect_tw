@@ -3,9 +3,10 @@ import Note from './db/models/Note.js';
 import { sequelize } from './db/connection.js';
 
 (async () => {
-  // await User.sync({});
-  // await Note.sync({ alter: true });
-  // User.hasMany(Note, { foreignKey: 'userId' });
+  User.hasMany(Note, { foreignKey: 'noteOwner', targetKey: 'id', type: 'UUID' });
+  Note.belongsTo(User, { foreignKey: 'noteOwner', targetKey: 'id', type: 'UUID' });
+  await User.sync({ force: true });
+  await Note.sync({ force: true });
   // const queryInterface = sequelize.getQueryInterface();
   // queryInterface.addConstraint('Notes', {
   //   fields: ['type'],
@@ -16,8 +17,8 @@ import { sequelize } from './db/connection.js';
   //   },
   // });
 
-  const users = await User.findAll({ raw: true });
-  const notes = await Note.findAll({ raw: true });
-  console.log(users);
-  console.log(notes);
+  // const users = await User.findAll({ raw: true });
+  // const notes = await Note.findAll({ raw: true });
+  // console.log(users);
+  // console.log(notes);
 })();

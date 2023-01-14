@@ -8,16 +8,18 @@ function Notes({ user }) {
 
   const getNotes = useCallback(() => {
     console.log('x');
-    fetch('http://localhost:3000/api/user/notes/' + thisUser.current.token, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setNotes(data.notes);
-      });
+    if (thisUser.current) {
+      fetch('http://localhost:3000/api/user/notes/' + thisUser.current.token, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setNotes(data.notes);
+        });
+    }
   }, [thisUser]);
 
   useEffect(() => {

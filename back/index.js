@@ -22,6 +22,33 @@ app.use(
   }),
 );
 
+const setDB = async (req = null, res = null) => {
+  try {
+    User.hasMany(Note, { foreignKey: 'noteOwner', targetKey: 'id', type: 'UUID' });
+    Note.belongsTo(User, { foreignKey: 'noteOwner', targetKey: 'id', type: 'UUID' });
+    await User.sync();
+    await Note.sync();
+    if (res) {
+      res.status(200).json({
+        message: 'Database was set successfully',
+      });
+    }
+  } catch (err) {
+    if (res) {
+      res.status(500).json({
+        message: 'Database was not set successfully',
+      });
+    }
+    console.log(err);
+  }
+};
+
+setDB();
+
+app.get('/api/setdb', async (req, res) => {
+  setDB(req, res);
+});
+
 app.post('/api/login', async (req, res) => {
   try {
     if (req.body.credential) {
@@ -98,26 +125,32 @@ app.post('/api/verify', async (req, res) => {
 
 // get last note
 app.get('/api/user/last', async (req, res) => {
-  const mail = req.get('user-email');
-  const token = await decodeJWT(req.get('user-token'));
-  const user = await User.findOne({ where: { mail: mail } });
-  if (user && token.id == user.id) {
-    const note = await Note.findOne({
-      where: { userId: user.id },
-      order: [['createdAt', 'DESC']],
-    });
-    if (note) {
-      const noteText = note.content.toString();
-      res.status(200).json({
-        note: note,
-        noteText: noteText,
+  try {
+    const mail = req.get('user-email');
+    const token = await decodeJWT(req.get('user-token'));
+    const user = await User.findOne({ where: { mail: mail } });
+    if (user && token.id == user.id) {
+      const notes = await Note.findAll({
+        where: { noteOwner: user.id },
+        order: [['updatedAt', 'DESC']],
+        limit: 1,
       });
-    } else {
-      res.status(404).json({
-        message: 'No notes found',
-        note: null,
-      });
+      if (notes.length > 0) {
+        const note = notes[0];
+        const noteText = note.content.toString();
+        res.status(200).json({
+          note: note,
+          noteText: noteText,
+        });
+      } else {
+        res.status(404).json({
+          message: 'No notes found',
+          note: null,
+        });
+      }
     }
+  } catch (error) {
+    console.log(error);
   }
 });
 
@@ -178,7 +211,7 @@ app.post('/api/user/note/', async (req, res) => {
       await Note.sync();
       const noteToSave = await Note.create({
         content: note,
-        userId: user.id,
+        noteOwner: user.id,
       });
       res.status(201).json({
         message: 'Note saved',
@@ -209,7 +242,7 @@ app.get('/api/user/notes/:id', async (req, res) => {
     const user = await User.findOne({ where: { id: userId.id } });
     if (user) {
       let notes = await Note.findAll({
-        where: { userId: user.id },
+        where: { noteOwner: user.id },
         order: [['createdAt', 'DESC']],
       });
       if (notes) {
