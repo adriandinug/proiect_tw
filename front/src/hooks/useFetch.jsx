@@ -5,7 +5,6 @@ const useFetch = (url) => {
   const [error, setError] = useState('');
 
   const handleGoogle = async (response) => {
-    console.log(response);
     setLoading(true);
     fetch(url, {
       method: 'POST',
@@ -21,13 +20,15 @@ const useFetch = (url) => {
       })
       .then((data) => {
         if (data?.user) {
-          if (!data?.user.email.includes('ase.ro')) {
-            setError('Please use your ase.ro email address to login!');
-            return;
-          } else {
-            localStorage.setItem('user', JSON.stringify(data?.user));
-            window.location.reload();
-          }
+          // if (!data?.user.email.includes('ase.ro')) {
+          //   setError('Please use your ase.ro email address to login!');
+          //   return;
+          // } else {
+          //   localStorage.setItem('user', JSON.stringify(data?.user));
+          //   window.location.reload();
+          // }
+          localStorage.setItem('user', JSON.stringify(data?.user));
+          window.location.reload();
         }
 
         throw new Error(data?.message || data);

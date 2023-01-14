@@ -1,0 +1,49 @@
+.friends > div {
+  margin-top: 20px;
+}
+.friends > div > h5 {
+  margin-bottom: 10px;
+}
+.friends input {
+  max-width: 500px;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 18px;
+  border-radius: 10px;
+  outline: none;
+  border: 1px solid #222;
+}
+.friends .search-bar {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.friends .friends-search {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 40px;
+  row-gap: 30px;
+}
+.friends .friend {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 20px;
+  border: 2px solid #222;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+.friends .friend > div h5,
+.friends .friend > div p {
+  margin-bottom: 10px;
+}
+.friends .friend-image {
+  display: flex;
+  gap: 18px;
+}
+.friends-search h4 {
+  grid-column: span 3;
+}

@@ -56,6 +56,11 @@ function Nav({ setOffset, isLoggedIn }) {
                   Notes
                 </Link>
               </li>
+              <li>
+                <Link to='/friends' onClick={() => setOpen(false)}>
+                  Friends
+                </Link>
+              </li>
               {!isLoggedIn && (
                 <li>
                   <Link to='/login' onClick={() => setOpen(false)}>

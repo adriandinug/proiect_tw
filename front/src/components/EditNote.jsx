@@ -89,6 +89,7 @@ function EditNote({ user, updateNote }) {
 
   return (
     <form className='edit-wrapper' onSubmit={formik.handleSubmit}>
+      <h4 style={{ textAlign: 'center' }}>Edit note fields</h4>
       <div className='field'>
         <label htmlFor='name'>Note Name</label>
         <input

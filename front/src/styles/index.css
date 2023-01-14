@@ -48,6 +48,20 @@ h6 {
   line-height: 1.2;
   font-weight: 500;
 }
+.markdown-wrapper .h1,
+.markdown-wrapper .h2,
+.markdown-wrapper .h3,
+.markdown-wrapper .h4,
+.markdown-wrapper .h5,
+.markdown-wrapper .h6,
+.markdown-wrapper h1,
+.markdown-wrapper h2,
+.markdown-wrapper h3,
+.markdown-wrapper h4,
+.markdown-wrapper h5,
+.markdown-wrapper h6 {
+  margin: 0 0 0.5em 0;
+}
 h1,
 .h1 {
   font-size: 70px;
@@ -80,6 +94,12 @@ li,
   line-height: 22px;
   color: #222;
   margin: 0;
+}
+.markdown-wrapper p,
+.markdown-wrapper a,
+.markdown-wrapper li,
+.markdown-wrapper .body {
+  margin: 0 0 0.8em 0;
 }
 a {
   text-decoration: underline;
@@ -134,9 +154,6 @@ textarea:focus {
 }
 a:visited {
   color: inherit;
-}
-.home {
-  height: 300vh;
 }
 .page-width {
   max-width: 1440px;

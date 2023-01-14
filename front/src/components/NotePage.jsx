@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import rehypeRaw from 'rehype-raw';
 import ReactMarkdown from 'react-markdown';
 import { debounce } from '../utils/debounce';
 import EditNote from './EditNote';
@@ -18,6 +19,36 @@ function NotePage({ user }) {
   const thisUser = useRef(user);
 
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const allowed = [
+    'p',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'ul',
+    'ol',
+    'li',
+    'blockquote',
+    'pre',
+    'code',
+    'em',
+    'strong',
+    'a',
+    'img',
+    'table',
+    'thead',
+    'tbody',
+    'tr',
+    'th',
+    'td',
+    'del',
+    'hr',
+    'br',
+    'iframe',
+  ];
 
   useEffect(() => {
     if (note) {
@@ -112,6 +143,8 @@ function NotePage({ user }) {
             <div className={show ? 'note-content full show' : 'note-content full'}>
               {show ? (
                 <ReactMarkdown
+                  rehypePlugins={[rehypeRaw]}
+                  allowedElements={allowed}
                   className='markdown-wrapper'
                   children={content}
                 ></ReactMarkdown>
@@ -135,6 +168,8 @@ function NotePage({ user }) {
                 onChange={(e) => setContent(e.target.value)}
               ></textarea>
               <ReactMarkdown
+                rehypePlugins={[rehypeRaw]}
+                allowedElements={allowed}
                 className='markdown-wrapper'
                 children={content}
               ></ReactMarkdown>

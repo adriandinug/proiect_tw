@@ -31,7 +31,6 @@ function Note({ note, user, refresh }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         refresh();
       });
   };

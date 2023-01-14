@@ -4,6 +4,8 @@ dotenv.config();
 import express from 'express';
 import User from './db/models/User.js';
 import Note from './db/models/Note.js';
+import Friend from './db/models/Friend.js';
+import { Op } from 'sequelize';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
@@ -26,8 +28,17 @@ const setDB = async (req = null, res = null) => {
   try {
     User.hasMany(Note, { foreignKey: 'noteOwner', targetKey: 'id', type: 'UUID' });
     Note.belongsTo(User, { foreignKey: 'noteOwner', targetKey: 'id', type: 'UUID' });
-    await User.sync({ alter: true });
-    await Note.sync({ alter: true });
+    // User.hasMany(Friend, { foreignKey: 'userId', targetKey: 'id', type: 'UUID' });
+    // Friend.belongsTo(User, { foreignKey: 'userId', targetKey: 'id', type: 'UUID' });
+    User.belongsToMany(User, {
+      as: 'friend',
+      through: 'Friend',
+      foreignKey: 'userId',
+      otherKey: 'friendId',
+    });
+    await User.sync({});
+    await Note.sync({});
+    await Friend.sync({});
     if (res) {
       res.status(200).json({
         message: 'Database was set successfully',
@@ -43,7 +54,7 @@ const setDB = async (req = null, res = null) => {
   }
 };
 
-// setDB();
+setDB();
 
 app.get('/api/setdb', async (req, res) => {
   setDB(req, res);
@@ -62,10 +73,9 @@ app.post('/api/login', async (req, res) => {
       const profile = verificationResponse?.payload;
 
       const existsInDB = await User.findOne({ where: { mail: profile.email } });
-
       let respCode = 200;
 
-      if (!existsInDB && profile?.email.includes('ase.ro')) {
+      if (!existsInDB) {
         await User.sync();
         const user = await User.create({
           nume: profile?.family_name,
@@ -123,13 +133,137 @@ app.post('/api/verify', async (req, res) => {
   }
 });
 
-// get last note
+app.post('/api/user/share', async (req, res) => {
+  try {
+    const mail = req.get('user-email');
+    const token = await decodeJWT(req.get('user-token'));
+    const friendId = req.body.friendId;
+    const noteId = req.body.noteId;
+    const user = await User.findOne({ where: { mail: mail } });
+    if (user && !token.error && token.id == user.id) {
+      const friend = await User.findByPk(friendId);
+      if (friend) {
+        const note = await Note.findByPk(noteId);
+        if (note) {
+          const newNote = await Note.create({
+            title: note.title,
+            fileName: note.fileName,
+            content: note.content,
+            materie: note.materie,
+            type: note.type,
+            tags: note.tags,
+          });
+          await newNote.setUser(friend);
+          res.status(200).json({
+            message: 'Note was shared successfully',
+          });
+        } else {
+          res.status(404).json({
+            message: 'Note not found',
+          });
+        }
+      } else {
+        res.status(404).json({
+          message: 'Friend not found',
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: error?.message || error,
+    });
+  }
+});
+
+app.post('/api/user/add', async (req, res) => {
+  try {
+    const mail = req.get('user-email');
+    console.log(req.get('user-token'));
+    const token = await decodeJWT(req.get('user-token'));
+    const user = await User.findOne({ where: { mail: mail } });
+    if (user && !token.error && token.id == user.id) {
+      const friend = await User.findByPk(req.body.friend);
+      if (friend) {
+        const exists = await Friend.findOne({
+          where: { userId: user.id, friendId: friend.id },
+        });
+        if (!exists) {
+          await Friend.create({
+            userId: user.id,
+            friendId: friend.id,
+          });
+          res.status(200).json({
+            message: 'Friend added successfully',
+          });
+        } else {
+          res.status(400).json({
+            message: 'Friend already added',
+          });
+        }
+      } else {
+        res.status(404).json({
+          message: 'User not found',
+        });
+      }
+    } else {
+      res.status(401).json({
+        message: 'Unauthorized',
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: error?.message || error,
+      users: [],
+    });
+  }
+});
+
+app.post('/api/user/search', async (req, res) => {
+  try {
+    const mail = req.get('user-email');
+    const token = await decodeJWT(req.get('user-token'));
+    const user = await User.findOne({ where: { mail: mail } });
+    if (user && !token.error && token.id == user.id) {
+      const userFriends = await Friend.findAll({ where: { userId: user.id } });
+      let userFriendsIds = [];
+      if (userFriends?.length > 0) {
+        userFriendsIds = userFriends.map((friend) => friend.friendId);
+      }
+      const users = await User.findAll({
+        where: {
+          mail: { [Op.like]: '%' + req.body.search + '%', [Op.not]: mail },
+          id: { [Op.notIn]: userFriendsIds },
+        },
+      });
+      if (users.length > 0) {
+        res.status(200).json({
+          message: 'Users found',
+          users: users,
+        });
+      } else {
+        res.status(404).json({
+          message: 'No users found',
+          users: [],
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: error?.message || error,
+      users: [],
+    });
+  }
+});
+
 app.get('/api/user/last', async (req, res) => {
   try {
     const mail = req.get('user-email');
     const token = await decodeJWT(req.get('user-token'));
     const user = await User.findOne({ where: { mail: mail } });
-    if (user && token.id == user.id) {
+    if (user && !token.error && token.id == user.id) {
       const notes = await Note.findAll({
         where: { noteOwner: user.id },
         order: [['updatedAt', 'DESC']],
@@ -151,6 +285,40 @@ app.get('/api/user/last', async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      message: error?.message || error,
+    });
+  }
+});
+
+app.get('/api/user/friends', async (req, res) => {
+  try {
+    const mail = req.get('user-email');
+    const token = await decodeJWT(req.get('user-token'));
+    const user = await User.findOne({ where: { mail: mail } });
+    if (user && !token.error && token.id == user.id) {
+      const friends = await Friend.findAll({ where: { userId: user.id } });
+      if (friends.length > 0) {
+        let friendsIds = friends.map((friend) => friend.friendId);
+        const friendsData = await User.findAll({
+          where: { id: friendsIds },
+        });
+        res.status(200).json({
+          message: 'Friends found',
+          friends: friendsData,
+        });
+      } else {
+        res.status(404).json({
+          message: 'No friends found',
+          friends: [],
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: error?.message || error,
+    });
   }
 });
 
@@ -207,7 +375,7 @@ app.post('/api/user/note/', async (req, res) => {
     const email = req.get('user-email');
     const token = await decodeJWT(req.get('user-token'));
     const user = await User.findOne({ where: { mail: email } });
-    if (user && token.id == user.id) {
+    if (user && !token.error && token.id == user.id) {
       await Note.sync();
       const noteToSave = await Note.create({
         content: note,

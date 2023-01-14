@@ -5,6 +5,7 @@ import Nav from './components/Nav';
 import Login from './components/Login';
 import Notes from './components/Notes';
 import NotePage from './components/NotePage';
+import Friends from './components/Friends';
 import { useState, useEffect } from 'react';
 
 function App() {
@@ -31,7 +32,6 @@ function App() {
 
     if (theUser && !theUser.includes('undefined')) {
       checkValid(JSON.parse(theUser)).then((data) => {
-        console.log(data);
         if (data.valid === true) {
           setUser(JSON.parse(theUser));
         } else {
@@ -61,6 +61,10 @@ function App() {
             element={!user ? <Navigate to='/login' /> : <NotePage user={user} />}
           />
           <Route path='/login' element={!user ? <Login /> : <Navigate to='/profile' />} />
+          <Route
+            path='/friends'
+            element={!user ? <Navigate to='/login' /> : <Friends user={user} />}
+          />
         </Routes>
       </main>
     </div>

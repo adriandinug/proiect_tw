@@ -1,0 +1,15 @@
+.home {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 20px;
+  row-gap: 40px;
+}
+.home .new-note {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.home .new-note button {
+  width: 60%;
+}
