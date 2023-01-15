@@ -14,13 +14,15 @@
 6. Pe pagina de notite avem o lista cu toate notitele noastre, putem sa le editam sau sa le stergem
 7. Pe pagina de profil vedem cateva date generale despre utilizatorul nostru si putem sa ne deconectam
 
+### LA ORICE SCHIMBARE/SAVE IN BACKEND, TREBUIE FACUT PASUL 3
+
 ### Specificatii
 
 - Logare cu adresă instituțională
 - Structurare și filtrare notițe în funcție de materii, de dată calendaristică (dată creare și ultima modificare) etc.
 - Căutare notițe în funcție de etichete, cuvinte cheie etc.
 - Adăugare, modificare și ștergere notițe
-- Posibilitate de adăugare a atașamentelor (fișiere, imagini etc.) în notițe (LINK)
+- Posibilitate de adăugare a atașamentelor (fișiere, imagini etc.) în notițe **(LINK)**
 - Integrare conținut Youtube
 - Implementare sistem markdown
 - Opțiune de creare grupuri între utilizatori pentru partajarea notițelor
