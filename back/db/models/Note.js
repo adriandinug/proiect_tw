@@ -37,6 +37,10 @@ Note.init(
       allowNull: true,
       defaultValue: '',
     },
+    originalSharedId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
   },
   {
     sequelize,

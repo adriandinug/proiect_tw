@@ -57,27 +57,25 @@ function FriendsSearch({ user }) {
       <div className='friends-search'>
         {friends.length === 0 && <h4>No users found.</h4>}
         {friends.map((friend) => (
-          <>
-            <div key={friend.id} className='friend'>
-              <div>
-                <h5>
-                  Nume: {friend.nume} {friend.prenume}
-                </h5>
-                <p>Mail: {friend.mail}</p>
-                <div className='friend-image'>
-                  <p>Poza: </p>
-                  <img src={friend.picture} alt='' />
-                </div>
+          <div key={friend.id} className='friend'>
+            <div>
+              <h5>
+                Nume: {friend.nume} {friend.prenume}
+              </h5>
+              <p>Mail: {friend.mail}</p>
+              <div className='friend-image'>
+                <p>Poza: </p>
+                <img src={friend.picture} alt='' />
               </div>
-              <button
-                className='button button--primary'
-                data-id={friend.id}
-                onClick={addFriend}
-              >
-                Add
-              </button>
             </div>
-          </>
+            <button
+              className='button button--primary'
+              data-id={friend.id}
+              onClick={addFriend}
+            >
+              Add
+            </button>
+          </div>
         ))}
       </div>
     </div>

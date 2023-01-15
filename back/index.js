@@ -5,6 +5,10 @@ import express from 'express';
 import User from './db/models/User.js';
 import Note from './db/models/Note.js';
 import Friend from './db/models/Friend.js';
+import Group from './db/models/Group.js';
+import UserGroup from './db/models/UserGroup.js';
+import NoteGroup from './db/models/NoteGroup.js';
+import { sequelize } from './db/connection.js';
 import { Op } from 'sequelize';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
@@ -28,17 +32,41 @@ const setDB = async (req = null, res = null) => {
   try {
     User.hasMany(Note, { foreignKey: 'noteOwner', targetKey: 'id', type: 'UUID' });
     Note.belongsTo(User, { foreignKey: 'noteOwner', targetKey: 'id', type: 'UUID' });
-    // User.hasMany(Friend, { foreignKey: 'userId', targetKey: 'id', type: 'UUID' });
-    // Friend.belongsTo(User, { foreignKey: 'userId', targetKey: 'id', type: 'UUID' });
     User.belongsToMany(User, {
       as: 'friend',
       through: 'Friend',
       foreignKey: 'userId',
       otherKey: 'friendId',
     });
-    await User.sync({});
-    await Note.sync({});
-    await Friend.sync({});
+    User.belongsToMany(Group, {
+      through: 'UserGroup',
+      foreignKey: 'userId',
+      otherKey: 'groupId',
+    });
+    Group.belongsToMany(User, {
+      through: 'UserGroup',
+      foreignKey: 'groupId',
+      otherKey: 'userId',
+    });
+    User.hasMany(Group, { foreignKey: 'groupOwner', targetKey: 'id', type: 'UUID' });
+    Group.belongsTo(User, { foreignKey: 'groupOwner', targetKey: 'id', type: 'UUID' });
+    Group.belongsToMany(Note, {
+      through: 'NoteGroup',
+      foreignKey: 'groupId',
+      otherKey: 'noteId',
+    });
+    Note.belongsToMany(Group, {
+      through: 'NoteGroup',
+      foreignKey: 'noteId',
+      otherKey: 'groupId',
+    });
+    await sequelize.sync({});
+    // await NoteGroup.sync({});
+    // await Group.sync({});
+    // await User.sync({});
+    // await UserGroup.sync({});
+    // await Note.sync({});
+    // await Friend.sync({});
     if (res) {
       res.status(200).json({
         message: 'Database was set successfully',
@@ -133,6 +161,249 @@ app.post('/api/verify', async (req, res) => {
   }
 });
 
+app.get('/api/user/groups', async (req, res) => {
+  try {
+    const mail = req.get('user-email');
+    const token = await decodeJWT(req.get('user-token'));
+    const user = await User.findOne({ where: { mail: mail } });
+    if (user && !token.error && token.id == user.id) {
+      const groups = await Group.findAll({
+        include: {
+          model: User,
+          where: { id: user.id },
+        },
+      });
+      console.log(groups);
+      // count the number of members and notes in each group
+      for (let i = 0; i < groups.length; i++) {
+        groups[i].dataValues.membersCount = await UserGroup.count({
+          where: { groupId: groups[i].groupId },
+        });
+        groups[i].dataValues.notesCount = await NoteGroup.count({
+          where: { groupId: groups[i].groupId },
+        });
+        groups[i].dataValues.ownerMail = await User.findOne({
+          where: { id: groups[i].groupOwner },
+          attributes: ['mail'],
+        });
+      }
+      res.status(200).json({
+        message: 'Groups fetched successfully',
+        groups: groups,
+      });
+    } else {
+      res.status(401).json({
+        message: 'Unauthorized',
+        groups: [],
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: err?.message || err,
+      groups: [],
+    });
+  }
+});
+
+app.post('/api/user/group', async (req, res) => {
+  try {
+    const mail = req.get('user-email');
+    const token = await decodeJWT(req.get('user-token'));
+    const user = await User.findOne({ where: { mail: mail } });
+    console.log(req.body.name);
+    const userGroups = await Group.findAll({ where: { groupOwner: user.id } });
+    const groupExists = await Group.findOne({
+      where: { name: req.body.name },
+    });
+    if (groupExists) {
+      return res.status(400).json({
+        message: 'Group name already taken',
+      });
+    }
+    if (userGroups.length >= 5) {
+      return res.status(400).json({
+        message: 'You can only have 5 groups',
+      });
+    } else {
+      if (user && !token.error && token.id == user.id) {
+        const group = await Group.create({
+          name: req.body.name,
+          groupOwner: user.id,
+        });
+        await UserGroup.create({
+          userId: user.id,
+          groupId: group.groupId,
+        });
+        res.status(200).json({
+          message: 'Group created successfully',
+          group: group,
+        });
+      } else {
+        res.status(401).json({
+          message: 'Unauthorized',
+        });
+      }
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: err?.message || err,
+    });
+  }
+});
+
+app.post('/api/user/group/join', async (req, res) => {
+  try {
+    const mail = req.get('user-email');
+    const token = await decodeJWT(req.get('user-token'));
+    const user = await User.findOne({ where: { mail: mail } });
+    const group = await Group.findOne({ where: { name: req.body.groupName } });
+    if (group) {
+      const userGroup = await UserGroup.findOne({
+        where: { userId: user.id, groupId: group.groupId },
+      });
+      if (userGroup) {
+        return res.status(400).json({
+          message: 'You are already a member of this group',
+        });
+      }
+      if (user && !token.error && token.id == user.id) {
+        await UserGroup.create({
+          userId: user.id,
+          groupId: group.groupId,
+        });
+        res.status(200).json({
+          message: 'Joined group successfully',
+          joined: true,
+        });
+      }
+    } else {
+      res.status(404).json({
+        message: 'Group not found',
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: error?.message || error,
+    });
+  }
+});
+app.post('/api/user/group/note', async (req, res) => {
+  try {
+    const mail = req.get('user-email');
+    const token = await decodeJWT(req.get('user-token'));
+    const user = await User.findOne({ where: { mail: mail } });
+    if (user && !token.error && token.id == user.id) {
+      const note = await Note.findOne({ where: { id: req.body.noteId } });
+      if (!note) {
+        return res.status(400).json({
+          message: 'Note not found',
+        });
+      }
+      const group = await Group.findOne({ where: { groupId: req.body.groupId } });
+      if (!group) {
+        return res.status(400).json({
+          message: 'Group not found',
+        });
+      }
+      const noteInGroup = await NoteGroup.findOne({
+        where: { noteId: note.id, groupId: group.groupId },
+      });
+      if (noteInGroup) {
+        return res.status(400).json({
+          message: 'Note already in group',
+        });
+      }
+      const noteGroup = await NoteGroup.create({
+        noteId: note.id,
+        groupId: group.groupId,
+      });
+      res.status(200).json({
+        message: 'Note added to group successfully',
+        noteGroup: noteGroup,
+      });
+    } else {
+      res.status(401).json({
+        message: 'Unauthorized',
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: err?.message || err,
+    });
+  }
+});
+
+app.get('/api/groups/notes', async (req, res) => {
+  try {
+    const groupId = req.get('group-id');
+    const group = await Group.findOne({ where: { groupId: groupId } });
+    if (group) {
+      const notes = await Group.findOne({
+        where: { groupId: groupId },
+        include: [
+          {
+            model: Note,
+          },
+        ],
+      });
+      if (notes) {
+        res.status(200).json({
+          message: 'Notes found',
+          notes: notes.Notes,
+        });
+      } else {
+        res.status(404).json({
+          message: 'Notes not found',
+          notes: [],
+        });
+      }
+    } else {
+      res.status(404).json({
+        message: 'Group not found',
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: error?.message || error,
+    });
+  }
+});
+
+app.delete('/api/user/group', async (req, res) => {
+  try {
+    const mail = req.get('user-email');
+    const token = await decodeJWT(req.get('user-token'));
+    const user = await User.findOne({ where: { mail: mail } });
+    if (user && !token.error && token.id == user.id) {
+      const group = await Group.findOne({ where: { id: req.body.groupId } });
+      if (group) {
+        await group.destroy();
+        res.status(200).json({
+          message: 'Group deleted successfully',
+        });
+      } else {
+        res.status(404).json({
+          message: 'Group not found',
+        });
+      }
+    } else {
+      res.status(401).json({
+        message: 'Unauthorized',
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: err?.message || err,
+    });
+  }
+});
+
 app.post('/api/user/share', async (req, res) => {
   try {
     const mail = req.get('user-email');
@@ -143,23 +414,32 @@ app.post('/api/user/share', async (req, res) => {
     if (user && !token.error && token.id == user.id) {
       const friend = await User.findByPk(friendId);
       if (friend) {
-        const note = await Note.findByPk(noteId);
-        if (note) {
-          const newNote = await Note.create({
-            title: note.title,
-            fileName: note.fileName,
-            content: note.content,
-            materie: note.materie,
-            type: note.type,
-            tags: note.tags,
-          });
-          await newNote.setUser(friend);
-          res.status(200).json({
-            message: 'Note was shared successfully',
-          });
+        const alreadyShared = await Note.findOne({
+          where: { originalSharedId: noteId, noteOwner: friendId },
+        });
+        if (!alreadyShared) {
+          const note = await Note.findByPk(noteId);
+          if (note) {
+            const newNote = await Note.create({
+              fileName: note.fileName,
+              content: note.content,
+              materie: note.materie,
+              type: note.type,
+              tags: note.tags,
+              originalSharedId: noteId,
+            });
+            await newNote.setUser(friend);
+            res.status(200).json({
+              message: 'Note was shared successfully',
+            });
+          } else {
+            res.status(404).json({
+              message: 'Note not found',
+            });
+          }
         } else {
-          res.status(404).json({
-            message: 'Note not found',
+          res.status(400).json({
+            message: 'Note was already shared to this user',
           });
         }
       } else {
@@ -330,7 +610,7 @@ app.get('/api/user/:id', async (req, res) => {
     if (user) {
       res.status(200).json({
         message: 'User found',
-        user: Object.assign({}, user.dataValues, { id: undefined }),
+        user: Object.assign({}, user.dataValues),
       });
     } else {
       res.status(404).json({

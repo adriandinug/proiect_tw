@@ -6,6 +6,7 @@ import Login from './components/Login';
 import Notes from './components/Notes';
 import NotePage from './components/NotePage';
 import Friends from './components/Friends';
+import GroupNotes from './components/GroupNotes';
 import { useState, useEffect } from 'react';
 
 function App() {
@@ -47,7 +48,10 @@ function App() {
       <Nav setOffset={setOffset} isLoggedIn={user ? true : false} />
       <main style={{ paddingTop: '104px' }} className='page-width'>
         <Routes>
-          <Route path='/' element={<Home user={user} />} />
+          <Route
+            path='/'
+            element={!user ? <Navigate to='/login' /> : <Home user={user} />}
+          />
           <Route
             path='/profile'
             element={!user ? <Navigate to='/login' /> : <Profile user={user} />}
@@ -55,6 +59,10 @@ function App() {
           <Route
             path='/notes'
             element={!user ? <Navigate to='/login' /> : <Notes user={user} />}
+          />
+          <Route
+            path='/group/:id/notes'
+            element={!user ? <Navigate to='/login' /> : <GroupNotes user={user} />}
           />
           <Route
             path='/note/:id'

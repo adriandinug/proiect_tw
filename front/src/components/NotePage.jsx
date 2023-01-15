@@ -16,6 +16,7 @@ function NotePage({ user }) {
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
   const [content, setContent] = useState('');
+  const [admin, setAdmin] = useState(false);
   const thisUser = useRef(user);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -80,6 +81,25 @@ function NotePage({ user }) {
       });
   }, [id, user]);
 
+  useEffect(() => {
+    fetch('http://localhost:3000/api/user/' + user.token, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const isAdmin = note ? data.user.id === note.noteOwner : false;
+        setAdmin(isAdmin);
+        if (!isAdmin) {
+          setEdit(false);
+          setFull(true);
+          setShow(true);
+        }
+      });
+  }, [user, note]);
+
   const updateNote = debounce(() => {
     const data = {
       fileName: note.fileName,
@@ -114,11 +134,13 @@ function NotePage({ user }) {
             </p>
           </div>
           <div className='note-buttons'>
-            <button className='button button--secondary' onClick={() => setEdit(!edit)}>
-              Edit
-            </button>
+            {admin && (
+              <button className='button button--secondary' onClick={() => setEdit(!edit)}>
+                Edit
+              </button>
+            )}
 
-            {!edit && (
+            {!edit && admin && (
               <>
                 <button
                   className='button button--secondary'
@@ -131,7 +153,7 @@ function NotePage({ user }) {
                 </button>
               </>
             )}
-            {!edit && full && (
+            {!edit && admin && full && (
               <button className='button button--primary' onClick={() => setShow(!show)}>
                 Switch view
               </button>

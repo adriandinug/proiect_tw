@@ -35,8 +35,6 @@ function Friends({ user }) {
 
   const shareFriend = (e) => {
     const val = e.target.parentElement.querySelector('select').value;
-    console.log(val);
-    console.log(e.target.dataset.id);
     fetch('http://localhost:3000/api/user/share', {
       method: 'POST',
       headers: {

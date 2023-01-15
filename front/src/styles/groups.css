@@ -1,0 +1,53 @@
+.group-list select {
+  font-size: 16px;
+  padding: 8px 10px;
+}
+.groups {
+  grid-column: span 2;
+}
+.group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+.group-list {
+  margin-top: 15px;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 30px;
+}
+.groups h4 {
+  margin-bottom: 18px;
+}
+.groups > div input {
+  padding: 4px 10px;
+  font-size: 16px;
+  outline: none;
+  border: 1px solid #222;
+  border-radius: 4px;
+  margin-left: 25px;
+}
+.groups .join-groups input {
+  margin-left: 0;
+  margin-right: 15px;
+}
+.join-groups > div {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.groups .join-groups button {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.groups > div button {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+.groups div .group button {
+  margin-top: 10px;
+  margin-bottom: 0;
+}

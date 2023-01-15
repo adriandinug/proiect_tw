@@ -1,4 +1,5 @@
 import FriendsSearch from './FriendsSearch.jsx';
+import Groups from './Groups.jsx';
 import { useNavigate } from 'react-router-dom';
 import '../styles/home.css';
 
@@ -31,6 +32,9 @@ function Home({ user }) {
       <div className='new-note'>
         <h4>Create new note</h4>
         <button onClick={createNote}>New</button>
+      </div>
+      <div className='groups'>
+        <Groups user={user} />
       </div>
     </div>
   );

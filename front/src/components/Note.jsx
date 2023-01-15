@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/note.css';
 
-function Note({ note, user, refresh }) {
+function Note({ note, user, refresh, admin }) {
   const thisUser = useRef(user);
 
   useEffect(() => {
@@ -56,9 +56,11 @@ function Note({ note, user, refresh }) {
         <button className='button-view'>
           <Link to={'/note/' + note.id}>View</Link>
         </button>
-        <button onClick={() => deleteNote()} className='button-delete'>
-          Delete
-        </button>
+        {admin && (
+          <button onClick={() => deleteNote()} className='button-delete'>
+            Delete
+          </button>
+        )}
       </div>
     </div>
   );
