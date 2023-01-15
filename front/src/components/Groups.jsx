@@ -6,6 +6,8 @@ function Groups({ user }) {
   const [groups, setGroups] = useState([]);
   const [name, setName] = useState('');
   const [notes, setNotes] = useState([]);
+  const [shareMessage, setShareMessage] = useState(null);
+  const [groupMessage, setGroupMessage] = useState('');
 
   const getGroups = useCallback(() => {
     fetch('http://localhost:3000/api/user/groups', {
@@ -50,12 +52,14 @@ function Groups({ user }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        const newGroup = data.group;
-        newGroup.membersCount = 1;
-        newGroup.notesCount = 0;
-        newGroup.ownerMail = { mail: user.email };
         if (data.group) {
+          const newGroup = data.group;
+          newGroup.membersCount = 1;
+          newGroup.notesCount = 0;
+          newGroup.ownerMail = { mail: user.email };
           setGroups([...groups, data.group]);
+        } else {
+          setGroupMessage(data.message);
         }
       });
   };
@@ -76,6 +80,11 @@ function Groups({ user }) {
         if (data.noteGroup) {
           getGroups();
         }
+        // copy shareMessage object to avoid mutating state
+        const newShareMessage = { ...shareMessage };
+        newShareMessage[e.target.dataset.id] = data.message;
+        setShareMessage(newShareMessage);
+        console.log(newShareMessage);
       });
   };
 
@@ -133,10 +142,13 @@ function Groups({ user }) {
             onChange={(e) => setName(e.target.value)}
             value={name}
           />
+          <span>{groupMessage}</span>
         </div>
-        <button className='button button--secondary' onClick={createGroup}>
-          New group
-        </button>
+        <div>
+          <button className='button button--secondary' onClick={createGroup}>
+            New group
+          </button>
+        </div>
         {groups.length === 0 ? <h5>No groups found.</h5> : <h5>Groups I'm part of:</h5>}
         <div className='group-list'>
           {groups.map((group) => (
@@ -166,6 +178,7 @@ function Groups({ user }) {
                   </button>
                 </>
               )}
+              <p>{shareMessage && (shareMessage[group.groupId] || '')}</p>
               <Link
                 to={'/group/' + group.groupId + '/notes'}
                 className='button button--secondary'

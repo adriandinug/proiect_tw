@@ -132,12 +132,25 @@ function Filters({ notes, changeNotes }) {
     search,
   ]);
 
+  const resetFilters = () => {
+    setTypeFilter('all');
+    setSubjectFilter('all');
+    setTagFilter('all');
+    setSort('created');
+    setSearch('');
+  };
+
   return (
     <>
       <div className='filters'>
         <div className='filter'>
           <h5>Filter by type</h5>
-          <select name='type' id='type' onChange={(e) => setTypeFilter(e.target.value)}>
+          <select
+            name='type'
+            id='type'
+            onChange={(e) => setTypeFilter(e.target.value)}
+            value={typeFilter}
+          >
             <option value='all'>All</option>
             <option value='curs'>Curs</option>
             <option value='seminar'>Seminar</option>
@@ -149,6 +162,7 @@ function Filters({ notes, changeNotes }) {
             name='subject'
             id='subject'
             onChange={(e) => setSubjectFilter(e.target.value)}
+            value={subjectFilter}
           >
             <option value='all'>All</option>
             {subjects.map((subject, i) => (
@@ -166,6 +180,7 @@ function Filters({ notes, changeNotes }) {
             onChange={(e) => {
               setTagFilter(e.target.value);
             }}
+            value={tagFilter}
           >
             <option value='all'>All</option>
             {tags.map((tag, i) => (
@@ -177,11 +192,21 @@ function Filters({ notes, changeNotes }) {
         </div>
         <div className='filter'>
           <h5>Sort by</h5>
-          <select name='sort' id='sort' onChange={(e) => setSort(e.target.value)}>
+          <select
+            name='sort'
+            id='sort'
+            onChange={(e) => setSort(e.target.value)}
+            value={sort}
+          >
             <option value='created'>Created at</option>
             <option value='updated'>Updated at</option>
             <option value='name'>Name</option>
           </select>
+        </div>
+        <div className='filter reset'>
+          <button className='button button--secondary' onClick={resetFilters}>
+            Reset filters
+          </button>
         </div>
       </div>
       <div className='search'>

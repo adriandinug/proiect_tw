@@ -4,6 +4,7 @@ import '../styles/friends_list.css';
 function Friends({ user }) {
   const [friends, setFriends] = useState([]);
   const [notes, setNotes] = useState([]);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:3000/api/user/friends', {
@@ -43,7 +44,9 @@ function Friends({ user }) {
       body: JSON.stringify({ friendId: e.target.dataset.id, noteId: val }),
     })
       .then((res) => res.json())
-      .then((data) => {});
+      .then((data) => {
+        setMessage(data.message);
+      });
   };
 
   return (
@@ -79,6 +82,7 @@ function Friends({ user }) {
               >
                 Share to friend
               </button>
+              <p>{message}</p>
             </div>
           </div>
         ))}

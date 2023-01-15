@@ -96,9 +96,17 @@ function NotePage({ user }) {
           setEdit(false);
           setFull(true);
           setShow(true);
+        } else {
+          if (searchParams.get('edit')) {
+            setEdit(true);
+          } else {
+            setEdit(false);
+          }
+          setFull(true);
+          setShow(false);
         }
       });
-  }, [user, note]);
+  }, [user, note, searchParams]);
 
   const updateNote = debounce(() => {
     const data = {
