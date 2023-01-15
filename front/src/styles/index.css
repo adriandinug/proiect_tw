@@ -6,6 +6,32 @@
   padding: 0;
   color: inherit;
 }
+.markdown-wrapper *,
+.markdown-wrapper *:after,
+.markdown-wrapper *:before {
+  padding: revert;
+  margin: revert;
+}
+.markdown-wrapper blockquote {
+  border-left: 5px solid #ccc;
+  margin-left: 20px;
+  padding-left: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.markdown-wrapper blockquote p {
+  margin-bottom: 0;
+}
+.markdown-wrapper code {
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  padding: 3px 5px;
+  border-radius: 3px;
+  font-size: 16px;
+}
+hr {
+  border-width: 2px;
+}
 html,
 body {
   min-height: 100vh;

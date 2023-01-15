@@ -82,7 +82,7 @@ const setDB = async (req = null, res = null) => {
   }
 };
 
-setDB();
+// setDB();
 
 app.get('/api/setdb', async (req, res) => {
   setDB(req, res);
