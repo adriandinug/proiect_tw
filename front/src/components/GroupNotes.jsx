@@ -20,7 +20,6 @@ function GroupNotes({ user }) {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           setNotes(data.notes);
           setFilteredNotes(data.notes);
         });

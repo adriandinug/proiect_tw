@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import '../styles/nav.css';
 import { useState, useRef, useEffect } from 'react';
 
-function Nav({ setOffset, isLoggedIn }) {
+function Nav({ isLoggedIn }) {
   const [open, setOpen] = useState(false);
   const headerRef = useRef(null);
 

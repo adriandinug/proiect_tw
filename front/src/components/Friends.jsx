@@ -16,7 +16,6 @@ function Friends({ user }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setFriends(data.friends);
       });
 
@@ -28,7 +27,6 @@ function Friends({ user }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setNotes(data.notes);
       });
   }, [user]);
@@ -45,9 +43,7 @@ function Friends({ user }) {
       body: JSON.stringify({ friendId: e.target.dataset.id, noteId: val }),
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      });
+      .then((data) => {});
   };
 
   return (

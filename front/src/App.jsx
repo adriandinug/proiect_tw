@@ -10,7 +10,6 @@ import GroupNotes from './components/GroupNotes';
 import { useState, useEffect } from 'react';
 
 function App() {
-  const [offset, setOffset] = useState(0);
   const [user, setUser] = useState(null);
 
   async function checkValid(userToBeChecked) {
@@ -45,7 +44,7 @@ function App() {
 
   return (
     <div>
-      <Nav setOffset={setOffset} isLoggedIn={user ? true : false} />
+      <Nav isLoggedIn={user ? true : false} />
       <main style={{ paddingTop: '104px' }} className='page-width'>
         <Routes>
           <Route

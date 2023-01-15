@@ -18,7 +18,6 @@ function FriendsSearch({ user }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setFriends(data.users);
       });
   };
@@ -35,7 +34,6 @@ function FriendsSearch({ user }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         searchFriends();
       });
   };
