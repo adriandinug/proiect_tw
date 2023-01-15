@@ -1,4 +1,3 @@
-// start express
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
@@ -140,7 +139,6 @@ app.post('/api/verify', async (req, res) => {
   try {
     const token = req.body.token;
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decodedToken);
     const existsInDB = await User.findOne({ where: { mail: req.body.mail } });
     if (existsInDB) {
       res.status(200).json({
@@ -173,8 +171,6 @@ app.get('/api/user/groups', async (req, res) => {
           where: { id: user.id },
         },
       });
-      console.log(groups);
-      // count the number of members and notes in each group
       for (let i = 0; i < groups.length; i++) {
         groups[i].dataValues.membersCount = await UserGroup.count({
           where: { groupId: groups[i].groupId },
@@ -211,7 +207,6 @@ app.post('/api/user/group', async (req, res) => {
     const mail = req.get('user-email');
     const token = await decodeJWT(req.get('user-token'));
     const user = await User.findOne({ where: { mail: mail } });
-    console.log(req.body.name);
     const userGroups = await Group.findAll({ where: { groupOwner: user.id } });
     const groupExists = await Group.findOne({
       where: { name: req.body.name },
@@ -459,7 +454,6 @@ app.post('/api/user/share', async (req, res) => {
 app.post('/api/user/add', async (req, res) => {
   try {
     const mail = req.get('user-email');
-    console.log(req.get('user-token'));
     const token = await decodeJWT(req.get('user-token'));
     const user = await User.findOne({ where: { mail: mail } });
     if (user && !token.error && token.id == user.id) {
@@ -756,7 +750,6 @@ app.put('/api/user/note/:id', async (req, res) => {
       const note = await Note.findOne({
         where: { id: req.params.id },
       });
-      console.log(tags);
       const newTags = tags ? tags : '';
       if (note) {
         await note.update({

@@ -80,7 +80,6 @@ function Groups({ user }) {
         if (data.noteGroup) {
           getGroups();
         }
-        // copy shareMessage object to avoid mutating state
         const newShareMessage = { ...shareMessage };
         newShareMessage[e.target.dataset.id] = data.message;
         setShareMessage(newShareMessage);
