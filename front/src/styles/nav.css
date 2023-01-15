@@ -94,6 +94,14 @@
 }
 @media only screen and (max-width: 990px) {
   .nav-drawer {
-    width: 80%;
+    width: 100%;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .header .logo img {
+    display: none;
+  }
+  .header .logo a {
+    text-align: center;
   }
 }

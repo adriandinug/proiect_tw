@@ -47,3 +47,14 @@
 .friends-search h4 {
   grid-column: span 3;
 }
+@media only screen and (max-width: 990px) {
+  .friends .search-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .friends .friends-search {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+}

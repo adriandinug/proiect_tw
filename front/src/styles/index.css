@@ -27,7 +27,7 @@ body {
 #root > div {
   min-height: 100vh;
 }
-#root > div img {
+img {
   display: block;
   max-width: 100%;
   height: auto;
@@ -159,11 +159,11 @@ a:visited {
   max-width: 1440px;
   margin-left: auto;
   margin-right: auto;
-  padding: 0 40px;
+  padding: 0 30px;
 }
 @media only screen and (max-width: 990px) {
   .page-width {
-    padding: 0 25px;
+    padding: 0 20px;
   }
   h1,
   .h1 {
@@ -192,6 +192,6 @@ a:visited {
 }
 @media only screen and (max-width: 550px) {
   .page-width {
-    padding: 0 15px;
+    padding: 0 10px;
   }
 }

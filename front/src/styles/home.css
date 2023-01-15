@@ -14,3 +14,28 @@
 .home .new-note button {
   width: 60%;
 }
+.home > div {
+  border: 2px solid #222;
+  padding: 12px 18px;
+  border-radius: 4px;
+}
+.home .new-note {
+  margin-bottom: 0;
+}
+@media only screen and (max-width: 990px) {
+  .home {
+    grid-template-columns: 1fr;
+  }
+  .home > div {
+    max-width: 100%;
+    display: flex;
+    flex-flow: column wrap;
+  }
+  .home .groups {
+    grid-column: span 1;
+  }
+  .group-list {
+    display: flex;
+    flex-direction: column;
+  }
+}
