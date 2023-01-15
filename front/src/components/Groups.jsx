@@ -18,7 +18,6 @@ function Groups({ user }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setGroups(data.groups);
       });
   }, [user]);
@@ -34,7 +33,6 @@ function Groups({ user }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setNotes(data.notes);
       });
   }, [user, getGroups]);
@@ -52,7 +50,6 @@ function Groups({ user }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         const newGroup = data.group;
         newGroup.membersCount = 1;
         newGroup.notesCount = 0;
@@ -76,7 +73,6 @@ function Groups({ user }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         if (data.noteGroup) {
           getGroups();
         }
