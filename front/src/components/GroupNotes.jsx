@@ -1,12 +1,12 @@
 import Filters from './Filters';
 import NotesList from './NotesList';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useCallback, useEffect } from 'react';
 
 function GroupNotes({ user }) {
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [notes, setNotes] = useState([]);
-
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const getNotes = useCallback(() => {
@@ -22,9 +22,12 @@ function GroupNotes({ user }) {
         .then((data) => {
           setNotes(data.notes);
           setFilteredNotes(data.notes);
+          if (data.redirect) {
+            navigate('/');
+          }
         });
     }
-  }, [user, id]);
+  }, [user, id, navigate]);
 
   useEffect(() => {
     getNotes();

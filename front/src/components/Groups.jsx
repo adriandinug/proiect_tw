@@ -83,7 +83,6 @@ function Groups({ user }) {
         const newShareMessage = { ...shareMessage };
         newShareMessage[e.target.dataset.id] = data.message;
         setShareMessage(newShareMessage);
-        console.log(newShareMessage);
       });
   };
 
@@ -111,6 +110,24 @@ function Groups({ user }) {
         }
         setGroupName('');
         setMessage(data.message);
+      });
+  };
+
+  const deleteGroup = (groupId) => {
+    fetch('http://localhost:3000/api/user/group', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Token': user.token,
+        'User-Email': user.email,
+      },
+      body: JSON.stringify({ groupId: groupId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.deleted) {
+          getGroups();
+        }
       });
   };
 
@@ -185,6 +202,15 @@ function Groups({ user }) {
               >
                 See group notes
               </Link>
+              {group.ownerMail.mail === user.email && (
+                <button
+                  className='button'
+                  style={{ color: 'white', backgroundColor: '#ee0022' }}
+                  onClick={() => deleteGroup(group.groupId)}
+                >
+                  Delete
+                </button>
+              )}
             </div>
           ))}
         </div>

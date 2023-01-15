@@ -359,6 +359,7 @@ app.get('/api/groups/notes', async (req, res) => {
     } else {
       res.status(404).json({
         message: 'Group not found',
+        redirect: true,
       });
     }
   } catch (error) {
@@ -375,11 +376,17 @@ app.delete('/api/user/group', async (req, res) => {
     const token = await decodeJWT(req.get('user-token'));
     const user = await User.findOne({ where: { mail: mail } });
     if (user && !token.error && token.id == user.id) {
-      const group = await Group.findOne({ where: { id: req.body.groupId } });
+      const group = await Group.findOne({ where: { groupId: req.body.groupId } });
+      if (group.groupOwner != user.id) {
+        return res.status(401).json({
+          message: 'Unauthorized',
+        });
+      }
       if (group) {
         await group.destroy();
         res.status(200).json({
           message: 'Group deleted successfully',
+          deleted: true,
         });
       } else {
         res.status(404).json({

@@ -10,8 +10,11 @@
 .group {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 10px;
+  border: 1px solid #222;
+  border-radius: 4px;
+  padding: 8px 12px;
 }
 .group-list {
   margin-top: 15px;
